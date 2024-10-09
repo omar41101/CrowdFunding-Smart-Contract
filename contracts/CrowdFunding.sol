@@ -21,6 +21,9 @@ contract CrowdFunding {
     mapping(uint256 => Campaign) public campaigns;
     uint256 public numberOfCampaigns = 0;
 
+    // Event to log when the target is achieved
+    event TargetAchieved(uint256 campaignId, uint256 amountCollected);
+
     // Create a new campaign (owner is the creator of the campaign)
     function createCampaign(
         address _owner,
@@ -48,33 +51,34 @@ contract CrowdFunding {
         return numberOfCampaigns.sub(1);
     }
 
-    // Donate to a specific campaign with checks-effects-interactions pattern
+    // Donate to a specific campaign
     function donateToCampaign(uint256 _id) external payable {
         require(msg.value > 0, "Donation amount must be greater than 0");
         Campaign storage campaign = campaigns[_id];
         require(campaign.owner != address(0), "Campaign does not exist");
-        require(!campaign.completed, "Campaign already completed"); // Ensure the campaign isn't already completed
+        require(!campaign.completed, "Campaign already completed");
 
         // Store initial amountCollected in memory
         uint256 initialAmountCollected = campaign.amountCollected;
 
-        // Effects
+        // Effects: Add the donation and donator information
         campaign.donators.push(msg.sender);
         campaign.donations.push(msg.value);
 
-        // Use SafeMath for addition to protect from overflow
+        // Use SafeMath for addition
         campaign.amountCollected = campaign.amountCollected.add(msg.value);
 
-        // Check if the target is met or exceeded
+        // If the target is achieved, transfer all collected funds to the campaign owner
         if (campaign.amountCollected >= campaign.target) {
-            campaign.completed = true; // Mark the campaign as completed
+            campaign.completed = true;
+            (bool sent, ) = payable(campaign.owner).call{value: campaign.amountCollected}("");
+            require(sent, "Failed to send Ether to campaign owner");
+
+            // Emit event for target achieved
+            emit TargetAchieved(_id, campaign.amountCollected);
         }
 
-        // Interactions: Transfer all donated Ether to the campaign owner
-        (bool sent, ) = payable(campaign.owner).call{value: msg.value}("");
-        require(sent, "Failed to send Ether to campaign owner");
-
-        // Ensure amountCollected is properly updated
+        // Ensure that the amountCollected is properly updated
         assert(campaign.amountCollected == initialAmountCollected.add(msg.value));
     }
 

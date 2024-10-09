@@ -6,6 +6,25 @@
 	"output": {
 		"abi": [
 			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "campaignId",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "amountCollected",
+						"type": "uint256"
+					}
+				],
+				"name": "TargetAchieved",
+				"type": "event"
+			},
+			{
 				"inputs": [
 					{
 						"internalType": "uint256",
@@ -286,11 +305,11 @@
 			]
 		},
 		"contracts/CrowdFunding.sol": {
-			"keccak256": "0x8aedeac8fe5b9fcbaec8866e1bf8f8fcb2549f12c63ea0f3f6e567feb2e14a27",
+			"keccak256": "0xa10348b04e8081d50f644aae191a5c12b54b3241b9aaf5925ca523e2009533e6",
 			"license": "UNLICENSED",
 			"urls": [
-				"bzz-raw://84dff1154f7a72028a712d6556911eeb1ad11a630ec8a5f1a7a57a0c0a5b72f4",
-				"dweb:/ipfs/QmZC2uY7W8kCMVVBMrZZc7Fy17joJMQJJ8Q1nhDKX1HevT"
+				"bzz-raw://68c1dc056d0b7d0db00b5a57fc66d6cd26721fd5d77e52cb8cf3583dd18698c4",
+				"dweb:/ipfs/Qmf6FNZdgUqrr3munaB9qaMEHZ8ockDm7DHz1Xg1UAWrAY"
 			]
 		}
 	},
